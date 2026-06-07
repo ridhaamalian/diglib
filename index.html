@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Carafolio">
 <meta name="theme-color" content="#0d0d0d">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Carafolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,7 +124,8 @@ label.field-label:first-child{margin-top:0}
 /* SCANNER */
 #scanner-view{position:fixed;inset:0;z-index:200;background:#000;display:none;flex-direction:column}
 #scanner-view.open{display:flex}
-#scanner-video{width:100%;flex:1;object-fit:cover}
+#scanner-video{width:100%;flex:1;position:relative;overflow:hidden}
+#scanner-video video,#scanner-video canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
 #scanner-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
 #scanner-frame{width:220px;height:140px;border:2px solid var(--yellow);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.55)}
 #scanner-label{margin-top:16px;color:var(--yellow);font-size:14px;letter-spacing:.08em}
@@ -272,7 +273,7 @@ label.field-label:first-child{margin-top:0}
 
 <!-- SCANNER -->
 <div id="scanner-view">
-  <video id="scanner-video" autoplay playsinline muted></video>
+  <div id="scanner-video"></div>
   <div id="scanner-overlay">
     <div id="scanner-frame"></div>
     <div id="scanner-label">Arahkan ke barcode ISBN</div>
@@ -778,6 +779,7 @@ function saveBook() {
     favscene: document.getElementById('f-favscene').value.trim(),
     photos: formPhotos,
     progress: editingId ? (DB.books.find(b=>b.id===editingId)?.progress||0) : 0,
+  };
   if(editingId) {
     const idx = books.findIndex(b=>b.id===editingId);
     if(idx>=0) books[idx]=book;

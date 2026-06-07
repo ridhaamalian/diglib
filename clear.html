@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Clearing cache...</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{background:#0d0d0d;color:#f4a0b8;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;gap:16px}
+.msg{font-size:18px}.sub{font-size:13px;color:#777}</style>
+</head>
+<body>
+<div class="msg" id="msg">🧹 Clearing old cache...</div>
+<div class="sub" id="sub">Please wait...</div>
+<script>
+async function nuke() {
+  // Unregister ALL service workers
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (const reg of regs) {
+      await reg.unregister();
+    }
+  }
+  // Clear ALL caches
+  const keys = await caches.keys();
+  for (const key of keys) {
+    await caches.delete(key);
+  }
+  document.getElementById('msg').textContent = '✅ Done!';
+  document.getElementById('sub').textContent = 'All cleared! Redirecting to Carafolio...';
+  setTimeout(() => {
+    window.location.href = '/diglib/index.html';
+  }, 1500);
+}
+nuke().catch(e => {
+  document.getElementById('msg').textContent = '⚠️ Try manually';
+  document.getElementById('sub').textContent = e.message;
+});
+</script>
+</body>
+</html>
